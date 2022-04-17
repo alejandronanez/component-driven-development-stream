@@ -1,7 +1,7 @@
 # Component Driven Development
 
 - [ ] Install Storybook
-- [ ] Configure Jest
+- [x] Configure Jest
 - [ ] Install MSW
 - [ ] `Input` component
 - [ ] `Button` component
