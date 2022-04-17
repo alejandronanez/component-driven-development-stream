@@ -12,11 +12,13 @@ export default {
 } as ComponentMeta<typeof Input>;
 
 export const Disabled: ComponentStory<typeof Input> = () => (
-  <Input disabled={true} />
+  <Input disabled={true} value="hello from story" onChange={() => {}} />
 );
 
-export const Enabled: ComponentStory<typeof Input> = () => <Input />;
+export const Enabled: ComponentStory<typeof Input> = () => (
+  <Input value="hello from story" onChange={() => {}} />
+);
 
 export const WithError: ComponentStory<typeof Input> = () => (
-  <Input error={true} />
+  <Input error={true} value="hello from story" onChange={() => {}} />
 );
