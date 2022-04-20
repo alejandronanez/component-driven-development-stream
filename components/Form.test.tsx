@@ -1,17 +1,22 @@
 import "@testing-library/jest-dom/extend-expect";
 import { userEvent } from "@storybook/testing-library";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { composeStories } from "@storybook/testing-react";
-import * as stories from "./Form.stories"; // import all stories from the stories file
+import * as stories from "./Form.stories";
 
-// Every component that is returned maps 1:1 with the stories, but they already contain all decorators from story level, meta level and global level.
-const { Default } = composeStories(stories);
+const { SuccessBehavior } = composeStories(stories);
 
-test("a user can type", () => {
-  render(<Default />);
+test("shows success message on 200", async () => {
+  render(<SuccessBehavior />);
+
   const inputElement = screen.getByRole("textbox");
+  await userEvent.type(inputElement, "example-email@email.com");
+  const submitButton = screen.getByRole("button");
+  await userEvent.click(submitButton);
 
-  userEvent.type(inputElement, "hola");
+  expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
-  expect(inputElement).toHaveDisplayValue("hola");
+  await waitFor(() => {
+    expect(screen.getByText(/yay/i)).toBeInTheDocument();
+  });
 });

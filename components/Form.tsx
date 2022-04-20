@@ -16,7 +16,6 @@ export function Form() {
     try {
       setIsLoading(true);
       const { data } = await axios.post("/api/signup");
-
       setIsSuccessful(data.success);
     } catch (e) {
       setIsError(true);
