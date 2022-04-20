@@ -1,11 +1,14 @@
 // Form.stories.ts|tsx
 
 import { rest } from "msw";
+import { screen, userEvent } from "@storybook/testing-library";
 import React from "react";
 
 import { ComponentStory, ComponentMeta } from "@storybook/react";
 
 import { Form } from "./Form";
+
+const DELAY_ON_SUBMIT = 1000;
 
 export default {
   title: "Form Component",
@@ -13,11 +16,23 @@ export default {
 } as ComponentMeta<typeof Form>;
 
 export const SuccessBehavior: ComponentStory<typeof Form> = () => <Form />;
+SuccessBehavior.play = async () => {
+  const input = screen.getByRole("textbox");
+
+  await userEvent.type(input, "example-email@email.com", {
+    delay: 50,
+  });
+  const submitButton = screen.getByRole("button");
+
+  await userEvent.click(submitButton);
+};
+
 SuccessBehavior.parameters = {
   msw: {
     handlers: [
       rest.post("/api/signup", (req, res, ctx) => {
         return res(
+          ctx.delay(DELAY_ON_SUBMIT),
           ctx.json({
             success: true,
           })
@@ -28,27 +43,21 @@ SuccessBehavior.parameters = {
 };
 
 export const ErrorBehavior: ComponentStory<typeof Form> = () => <Form />;
+ErrorBehavior.play = async () => {
+  const input = screen.getByRole("textbox");
+
+  await userEvent.type(input, "example-email@email.com", {
+    delay: 50,
+  });
+  const submitButton = screen.getByRole("button");
+
+  await userEvent.click(submitButton);
+};
 ErrorBehavior.parameters = {
   msw: {
     handlers: [
       rest.post("/api/signup", (req, res, ctx) => {
-        return res(ctx.status(400));
-      }),
-    ],
-  },
-};
-
-export const LoadingBehavior: ComponentStory<typeof Form> = () => <Form />;
-LoadingBehavior.parameters = {
-  msw: {
-    handlers: [
-      rest.post("/api/signup", (req, res, ctx) => {
-        return res(
-          ctx.delay(2000),
-          ctx.json({
-            success: true,
-          })
-        );
+        return res(ctx.delay(DELAY_ON_SUBMIT), ctx.status(400));
       }),
     ],
   },
